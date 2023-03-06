@@ -1,150 +1,152 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <ctype.h>
-#define Size 30
-#define pi 3.14
+#include <stdio.h>
+#include <string.h>
 
-typedef struct point
-{
+typedef struct point {
     double x;
     double y;
-} Point;
+}point;
 
-typedef struct circle
+typedef struct circle {
+    point center;
+    double radius;
+}circle;
+int error_one(char *str)
 {
-    Point p;
-    double r;
-} Circle;
-
-
-void errPrint(int num, int errnum){
-    for (int i = 0; i < num;i++)
-        putchar(' ');
-    putchar('^');
-    printf("\n");
-    switch (errnum)
+    int j = str[6];
+    if (j == 41)
     {
-    case 1:
-        printf("Error at column 0: expected 'circle'\n");
-        exit(0);
-        break;
-    
-    case 2:
-        printf("Error at column %d: expected '<double>'\n", num+1);
-        exit(0);
-        break;
-    case 3:
-        printf("Error at column %d: expected ')'\n", num);
-        exit(0);
-        break;
-    
-    case 4:
-        printf("Error at column %d: unexpected token\n", num);
-        exit(0);
-        break;
+        return 1;
     }
+    return 0;
+}
+int erorr_two(char *str)
+{
+    int j = 40;
+    for (int i = 9; i < 40;i++)
+    {
+        if (str[i] == j)
+        return 1;
+    }
+    return 0;
 }
 
-double getNumber(int* num){
-    char curch;
-    char temp[Size];
-    int cnt = 0;
-    char* end;
-    while ((curch=getchar()) != ')')
-    {
-        temp[cnt] = curch;
-        if (temp[cnt] == ' '){
-            cnt++;
+void strtolower(char* str)
+{
+    for (int i = 0; i < strlen(str); i++)
+        str[i] = tolower(str[i]);
+}
+
+int isArguments(char* str)
+{
+    int ret = 0;
+    int count = 0;
+    for (int i = 7; str[i] != ',' && i < strlen(str); i++) {
+        if ((str[i] != '.' && str[i] != ' ')
+            && !(str[i] >= 48 && str[i] <= 57)) {
+            printf("Error: expected '<double>'\n");
+            ret++;
+            return 1;
+        }
+        if (str[i] >= 48 && str[i] <= 57 && str[i + 1] == ' ')
+            count++;
+        if (str[i] == '.' && str[i + 1] == ')')
+            count += 2;
+    }
+    if (count + 1 != 2) {
+        printf("Error: expected '<double>'\n");
+        ret++;
+        return ret;
+    }
+    int index = 0;
+    for (int i = 0; i != strlen(str); i++) {
+        if (str[i] == ',') {
+            index = i + 1;
+            i = strlen(str) - 1;
+        }
+    }
+    for (; str[index] != ')' && index < strlen(str); index++) {
+        if ((str[index] != '.' && str[index] != ' ')
+            && !(str[index] >= 48 && str[index] <= 57)) {
+            printf("Error: expected radius '<double>'\n");
+            ret++;
+            return 1;
+        }
+        if (str[index] >= 48 && str[index] <= 57 && str[index + 1] == ' ')
+            count++;
+        if (str[index] == '.' && str[index + 1] == ' ')
+            count += 2;
+    }
+    if (count != 1) {
+        printf("Error: expected radius '<double>'\n");
+        ret++;
+    }
+    return ret;
+}
+
+int isEnd(char* str)
+{
+    int ret = 1;
+    int firstBracket = 0;
+    long int endingSymbol;
+    if (str[strlen(str) - 1] == '\n')
+        endingSymbol = strlen(str) - 2;
+    else
+        endingSymbol = strlen(str) - 1;
+    for (int i = 0; i < strlen(str); i++) {
+        if (str[i] == ')') {
+            firstBracket = i;
             break;
         }
-        if (temp[cnt] == '.'){
-            cnt++;
-            continue;
-        }
-        if (temp[cnt] == ','){
-            cnt++;
-            break;
-        }
-        if (temp[cnt] == ')'){
-            cnt++;
-            break;   
-        }
-        if(temp[cnt] == '('){
-            errPrint(*num+cnt-1, 3);
-            exit(0);
-        }
-        if (temp[cnt] != '.' && (!isdigit(temp[cnt]))) {
-                errPrint(*num, 2);
-                exit(0);
-            }
-        cnt++;
     }
-    *num += cnt+1;
-    return strtod(temp,&end);
+    if (firstBracket == endingSymbol)
+        ret = 0;
+    return ret;
 }
 
-void getPointData(Point* p, int* num){
-    p->x = getNumber(num);
-    *num -= 1;
-    p->y = getNumber(num);
-}
-
-void tokenContron(int* num){
-    char curch =getchar();
-    *num += 1;
-    if (curch != '\n'){
-        if (curch != ' '){
-            errPrint(*num, 4);
-            exit(0);
-        }
-        else{
-            if(getchar()=='\n')
-                exit(0);
-            else{
-                *num += 1;
-                errPrint(*num,4);
-            }
-        }
+int isObject(char* str)
+{
+    int ret = 1;
+    char rec[100];
+    for (int i = 0; i < 6; i++) {
+        rec[i] = str[i];
     }
+    char figure[] = "circle";
+    if (strcmp(rec, figure) == 0) {
+        ret = 0;
+    }
+    return ret;
 }
 
-void getCircleData(Circle* circle, int* num){
-    getPointData(&circle->p, num);
-    getchar();
-    circle->r = getNumber(num);
+int printErrors(char* str, int countObj)
+{
+    printf("Position %d:\n", countObj);
+    if (isObject(str))
+        printf("Error: expected 'circle'\n");
+    else if (error_one(str))
+        printf("Error: expected '('\n");
+    else if(erorr_two(str))
+        printf("Error: expected ')'\n");
+    else if (isArguments(str))
+        return 0;
+    else if (isEnd(str))
+        printf("Error: unexpected token\n");
+    else
+        printf("%s\n", str);
+    return 0;
 }
 
-void pushInfo(Circle* circle){
-    printf("circle(%f %f, %f)\n", circle->p.x, circle->p.y, circle->r);
-    double perimeter = 2 * pi * circle->r; 
-    double area = pi * circle->r * circle->r;
-    printf("perimeter = %f\n", perimeter);
-    printf("area = %f\n", area);
-}
-
-
-int main(){
-    char str[Size];
-    char curch =getchar();
-    int symbnum = 0;
-    Circle circle;
-    do
-    {
-        if (curch == '('){
-            if (strcmp(str, "circle") == 0){
-                getCircleData(&circle, &symbnum);
-                pushInfo(&circle);
-            }
-            else
-            {
-                errPrint(0, 1);
-                exit(0);
-            }
-        }
-        str[symbnum++] = curch;
-
-    } while ((curch = getchar()) != '\n' || curch != EOF);
-
+int main()
+{
+    FILE* file;
+    file = fopen("test.txt", "r");
+    char str1[100];
+    int countObj = 0;
+    while (fgets(str1, 99, file)) {
+        countObj++;
+        strtolower(str1);
+        printErrors(str1, countObj);
+    }
+    fclose(file);
     return 0;
 }
