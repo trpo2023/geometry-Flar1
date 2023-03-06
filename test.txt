@@ -1,0 +1,6 @@
+circle(0 0, 1.5)
+circle(1 1.5, 1)
+circle(1.5 1.5, 100)
+circle(0 0, 1 5)
+circle(1 1 4, 15)
+cicle(1 1, 5)
