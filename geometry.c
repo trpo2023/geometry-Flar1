@@ -6,6 +6,7 @@
 #define ascii_bracket_right 41
 #define zero 48
 #define nine 57
+#define M_PI		3.14159265358979323846
 typedef struct point {
     double x;
     double y;
@@ -152,22 +153,52 @@ int printErrors(char* str, int countObj)
 {
 	int z = right_bracket(str);
     int s = issEnd(str) - 1;
+    int count = 0;
     printf("Position %d:\n", countObj);
     if (isObject(str))
+    {
+        count++;
         printf("Error at column 0: expected 'circle'\n");
+    }
     else if (left_bracket(str))
+    {
+        count++;
         printf("Error at column 7: expected '('\n");
+    }
     else if (right_bracket(str))
+    {   count++;
         printf("Error at column %d: expected ')'\n",z);
+    }
     else if (isArguments(str))
-        return 0;
+    {
+        count++;
+        return count;
+    }
     else if (isEnd(str))
+    {
+        count++;
         printf("Error at column %d: unexpected token\n",s);
+    }
     else
-        printf("%s\n", str);
-    return 0;
+    {
+        if (countObj == 1)
+        {
+            printf("%s", str);
+        }
+        if (countObj > 1)
+        {
+            printf("%s\n",str);
+        }
+    }
+    return count;
 }
-
+void zeero(char *mass)
+{
+    for (int i = 0 ; i< 10 ;i++)
+    {
+        mass[i] = 0;
+    }
+}
 int main()
 {
     FILE* file;
@@ -178,10 +209,34 @@ int main()
     }
     char str1[100];
     int countObj = 0;
+
     while (fgets(str1, 99, file)) {
         countObj++;
         strtolower(str1);
-        printErrors(str1, countObj);
+        int v = printErrors(str1, countObj);
+        for (; v<1 ;v++)
+        {
+            char radius[10]; 
+            for(int i = 7; i != strlen(str1); i++)
+            {
+                if (str1[i] == ',')
+                {
+                    int j = 0;
+                    i = i+1;
+                    for (int z = i; str1[z] != ')'; z++)
+                    {
+                        radius[j] = str1[z];
+                        j++;
+                    }
+                }
+            }
+        double rad = atof(radius);
+        double per = 2* M_PI *rad;
+        double plosh = M_PI * rad * rad;
+        printf(" perimetr = %.4lf\n",per);
+        printf(" area = %.4lf\n",plosh);
+        zeero(radius);
+        }
     }
     fclose(file);
     return 0;
