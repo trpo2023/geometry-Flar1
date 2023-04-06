@@ -5,8 +5,8 @@
 int main()
 {
     FILE* file;
-    file = fopen("test.txt", "r");
-    if (fopen("test.txt", "r") == NULL) {
+    file = fopen("./test.txt", "r");
+    if (fopen("./test.txt", "r") == NULL) {
         printf("File not found\n");
         exit(0);
     }

@@ -35,3 +35,4 @@ run:
 
 clean:
 	rm -rf $(OBJ_DIR)/libgeometry/*.o $(OBJ_DIR)/geometry/*.o $(TARGET)
+	rm -rf $(OUT_DIR)/*.a
