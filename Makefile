@@ -1,38 +1,38 @@
 CC = gcc
 CFLAGS = -Wall -Werror
 
-SRC_DIR = src
-OUT_DIR = bin
-OBJ_DIR = obj
+SrcDir = src
+BinDir = bin
+ObjDir = obj
 	
-MAIN_SRCS = $(wildcard $(SRC_DIR)/geometry/*.c)
-MAIN_OBJ = $(MAIN_SRCS:$(SRC_DIR)/geometry/%.c=$(OBJ_DIR)/geometry/%.o)
+MainSrcs = $(wildcard $(SrcDir)/geometry/*.c)
+MainObj = $(MainSrcs:$(SrcDir)/geometry/%.c=$(ObjDir)/geometry/%.o)
 
-LIB_SRCS = $(wildcard $(SRC_DIR)/libgeometry/*.c)
-LIB_OBJ = $(LIB_SRCS:$(SRC_DIR)/libgeometry/%.c=$(OBJ_DIR)/libgeometry/%.o)
+LibSrcs = $(wildcard $(SrcDir)/libgeometry/*.c)
+LibObj = $(LibSrcs:$(SrcDir)/libgeometry/%.c=$(ObjDir)/libgeometry/%.o)
 
-LIB_TARGET = $(OUT_DIR)/libgeometry.a
-TARGET = $(OUT_DIR)/main
+LibTarget = $(BinDir)/libgeometry.a
+Target = $(BinDir)/main
 
 .PHONY: all clean test
 
-all: $(LIB_TARGET) $(TARGET)
+all: $(LibTarget) $(Target)
 
-$(TARGET): $(MAIN_OBJ) 
-	$(CC) $(CFLAGS) $^ -lm -L$(OUT_DIR) -lgeometry -o $@
+$(Target): $(MainObj) 
+	$(CC) $(CFLAGS) $^ -lm -L$(BinDir) -lgeometry -o $@
 
-$(OBJ_DIR)/geometry/%.o: $(SRC_DIR)/geometry/%.c
+$(ObjDir)/geometry/%.o: $(SrcDir)/geometry/%.c
 	$(CC) $(CFLAGS) -c -Isrc $< -o $@
 
-$(LIB_TARGET): $(LIB_OBJ)
+$(LibTarget): $(LibObj)
 	ar rcs $@ $^
 
-$(OBJ_DIR)/libgeometry/%.o: $(SRC_DIR)/libgeometry/%.c
+$(ObjDir)/libgeometry/%.o: $(SrcDir)/libgeometry/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 run:
-	./$(TARGET)
+	./$(Target)
 
 clean:
-	rm -rf $(OBJ_DIR)/libgeometry/*.o $(OBJ_DIR)/geometry/*.o $(TARGET)
-	rm -rf $(OUT_DIR)/*.a
+	rm -rf $(ObjDir)/libgeometry/*.o $(ObjDir)/geometry/*.o $(Target)
+	rm -rf $(BinDir)/*.a
