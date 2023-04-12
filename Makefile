@@ -19,10 +19,10 @@ $(Target): $(ObjDir)/geometry/main.o $(LibTarget)
 $(LibTarget): $(ObjDir)/libgeometry/circle.o
 	ar rcs $@ $^
 
-$(ObjDir)/geometry/main.o: $(SrcDir)/geometry/main.c
+$(ObjDir)/geometry/main.o: $(MainSrc)
 	$(CC) -c $(CFLAGS) $< $(CPPFLAGS) -o $@ -I $(SrcDir)/libgeometry/  
 
-$(ObjDir)/libgeometry/circle.o: $(SrcDir)/libgeometry/circle.c
+$(ObjDir)/libgeometry/circle.o: $(LibSrc)
 	$(CC) -c $(CFLAGS) $< $(CPPFLAGS) -o $@ -I $(SrcDir)/libgeometry
 
 .PHONY: clean
@@ -33,5 +33,5 @@ run:
 clean:
 	rm -rf $(ObjDir)/libgeometry/*.o $(ObjDir)/geometry/*.o $(Target)
 	rm -rf $(ObjDir)/libgeometry/*.d $(ObjDir)/geometry/*.d
-	rm -rf $(BinDir)/libgeometry.a
+	rm -rf $(LibTarget)
 -include $(ObjDir)/geometry/%.d $(ObjDir)/libgeometry/%.d
