@@ -1,38 +1,37 @@
 CC = gcc
 CFLAGS = -Wall -Werror
-
+CPPFLAGS = -MMD
 SrcDir = src
 BinDir = bin
 ObjDir = obj
 	
-MainSrcs = $(wildcard $(SrcDir)/geometry/*.c)
-MainObj = $(MainSrcs:$(SrcDir)/geometry/%.c=$(ObjDir)/geometry/%.o)
-
-LibSrcs = $(wildcard $(SrcDir)/libgeometry/*.c)
-LibObj = $(LibSrcs:$(SrcDir)/libgeometry/%.c=$(ObjDir)/libgeometry/%.o)
+MainSrc = $(wildcard $(SrcDir)/geometry/*.c)
+LibSrc = $(wildcard $(SrcDir)/libgeometry/*.c)
 
 LibTarget = $(BinDir)/libgeometry.a
 Target = $(BinDir)/main
 
-.PHONY: all clean test
+all: $(Target)
 
-all: $(LibTarget) $(Target)
+$(Target): $(ObjDir)/geometry/main.o $(LibTarget)
+	$(CC) $(CFLAGS) -o $@ $^ -lm
 
-$(Target): $(MainObj) 
-	$(CC) $(CFLAGS) $^ -lm -L$(BinDir) -lgeometry -o $@
-
-$(ObjDir)/geometry/%.o: $(SrcDir)/geometry/%.c
-	$(CC) $(CFLAGS) -c -Isrc $< -o $@
-
-$(LibTarget): $(LibObj)
+$(LibTarget): $(ObjDir)/libgeometry/circle.o
 	ar rcs $@ $^
 
-$(ObjDir)/libgeometry/%.o: $(SrcDir)/libgeometry/%.c
-	$(CC) $(CFLAGS) -c $< -o $@
+$(ObjDir)/geometry/main.o: $(SrcDir)/geometry/main.c
+	$(CC) -c $(CFLAGS) $< $(CPPFLAGS) -o $@ -I $(SrcDir)/libgeometry/  
+
+$(ObjDir)/libgeometry/circle.o: $(SrcDir)/libgeometry/circle.c
+	$(CC) -c $(CFLAGS) $< $(CPPFLAGS) -o $@ -I $(SrcDir)/libgeometry
+
+.PHONY: clean
 
 run:
 	./$(Target)
 
 clean:
 	rm -rf $(ObjDir)/libgeometry/*.o $(ObjDir)/geometry/*.o $(Target)
-	rm -rf $(BinDir)/*.a
+	rm -rf $(ObjDir)/libgeometry/*.d $(ObjDir)/geometry/*.d
+	rm -rf $(BinDir)/libgeometry.a
+-include $(ObjDir)/geometry/%.d $(ObjDir)/libgeometry/%.d
