@@ -8,7 +8,7 @@ ObjDir = obj
 MainSrc = $(wildcard $(SrcDir)/geometry/*.c)
 LibSrc = $(wildcard $(SrcDir)/libgeometry/*.c)
 
-LibTarget = $(BinDir)/libgeometry.a
+LibTarget = $(ObjDir)/libgeometry/libgeometry.a
 Target = $(BinDir)/main
 
 all: $(Target)
