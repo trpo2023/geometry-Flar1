@@ -1,7 +1,7 @@
-#define ascii_bracket_left 40
-#define ascii_bracket_right 41
-#define zero 48
-#define nine 57
+#define ASCII_BRACKET_LEFT 40
+#define ASCII_BRACKET_RIGHT 41
+#define ZERO 48
+#define NINE 57
 #define M_PI 3.14159265358979323846
 typedef struct point {
     double x;
@@ -14,10 +14,11 @@ typedef struct circle {
 } circle;
 int left_bracket(char* str);
 int right_bracket(char* str);
-void strtolower(char* str);
-int isArguments(char* str);
-int isEnd(char* str);
-int issEnd(char* str);
-int isObject(char* str);
-int printErrors(char* str, int countObj);
-void zeero(char* mass);
+void str_to_lower(char* str);
+int is_arguments(char* str);
+int is_end(char* str);
+int error_ending_symbol(char* str);
+int is_object(char* str);
+int print_errors(char* str, int countObj);
+void init_array(char* mass);
+void calc_per_and_area(char* str);
