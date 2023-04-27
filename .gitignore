@@ -1,5 +1,4 @@
 *.swp
-main.c
 libgeometry.a
 main.d
 main.o
