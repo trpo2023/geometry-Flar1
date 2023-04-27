@@ -1,7 +1,7 @@
-#include <ctest.h>
 #include "circle.h"
-#include <stdio.h>
+#include <ctest.h>
 #include <math.h>
+#include <stdio.h>
 
 CTEST(INPUT_CHECK, LEFT_BRACKET_INDEX)
 {
