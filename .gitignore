@@ -5,3 +5,6 @@ main.o
 circle.d
 circle.o
 main
+test.d
+test.o
+main-test
