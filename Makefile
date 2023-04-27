@@ -53,6 +53,6 @@ clean:
 	rm -rf $(ObjDir)/test/*.o $(ObjDir)/test/*.d
 	rm -rf $(BinDir)/$(Test_name)
 format: 
-	clang-format -i --verbose $(MainSrc) $(LibSrc)
+	clang-format -i  $(MainSrc) $(LibSrc)
 
 -include $(ObjDir)/geometry/%.d $(ObjDir)/libgeometry/%.d $(ObjDir)/test/%.d
