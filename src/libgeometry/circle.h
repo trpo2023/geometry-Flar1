@@ -11,6 +11,8 @@ typedef struct point {
 typedef struct circle {
     point center;
     double radius;
+    double perimeter;
+    double area;
 } circle;
 int left_bracket(char* str);
 int right_bracket(char* str);
@@ -20,5 +22,9 @@ int is_end(char* str);
 int error_ending_symbol(char* str);
 int is_object(char* str);
 int print_errors(char* str, int countObj);
+int intersects(circle* figures, int index, int length);
+double get_per(char* str);
+double get_area(char* str);
+int get_center(char* str, circle* circle);
+int get_radius(char* str, circle* circle);
 void init_array(char* mass);
-void calc_per_and_area(char* str);

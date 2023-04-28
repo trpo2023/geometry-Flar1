@@ -14,15 +14,25 @@ int main()
     }
     char str1[100];
     int countObj = 0;
-
+    circle circ_pos;
+    circle* cir_cle = calloc(100, sizeof(circle));
     while (fgets(str1, 99, file)) {
-        countObj++;
         str_to_lower(str1);
-        int v = print_errors(str1, countObj);
-        for (; v < 1; v++) {
-            calc_per_and_area(str1);
+        if (print_errors(str1, countObj) == 0) {
+            countObj++;
+            get_center(str1, &circ_pos);
+            get_radius(str1, &circ_pos);
+            circ_pos.perimeter = get_per(str1);
+            circ_pos.area = get_area(str1);
+            cir_cle[countObj - 1] = circ_pos;
+        } else {
+            printf("%s\n", str1);
         }
     }
+    for (int i = 0; i < countObj; i++) {
+        intersects(cir_cle, i, countObj);
+    }
     fclose(file);
+    free(cir_cle);
     return 0;
 }

@@ -1,9 +1,9 @@
+#include "circle.h"
 #include <ctype.h>
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-#include "circle.h"
 
 int left_bracket(char* str)
 {
@@ -143,7 +143,6 @@ int print_errors(char* str, int countObj)
     int z = right_bracket(str);
     int s = error_ending_symbol(str) - 1;
     int count = 0;
-    printf("Position %d:\n", countObj);
     if (is_object(str)) {
         count++;
         printf("Error at column 0: expected 'circle'\n");
@@ -159,24 +158,11 @@ int print_errors(char* str, int countObj)
     } else if (is_end(str)) {
         count++;
         printf("Error at column %d: unexpected token\n", s);
-    } else {
-        if (countObj == 1) {
-            printf("%s", str);
-        }
-        if (countObj > 1) {
-            printf("%s\n", str);
-        }
     }
     return count;
 }
 
-void init_array(char* mass)
-{
-    for (int i = 0; i < 10; i++) {
-        mass[i] = 0;
-    }
-}
-void calc_per_and_area(char* str)
+double get_per(char* str)
 {
     char radius[10];
     for (int i = 7; i != strlen(str); i++) {
@@ -191,8 +177,102 @@ void calc_per_and_area(char* str)
     }
     double rad = atof(radius);
     double per = 2 * M_PI * rad;
-    double plosh = M_PI * rad * rad;
-    printf(" perimetr = %.4lf\n", per);
-    printf(" area = %.4lf\n", plosh);
     init_array(radius);
+    return per;
+}
+double get_area(char* str)
+{
+    char radius[10];
+    for (int i = 7; i != strlen(str); i++) {
+        if (str[i] == ',') {
+            int j = 0;
+            i = i + 1;
+            for (int z = i; str[z] != ')'; z++) {
+                radius[j] = str[z];
+                j++;
+            }
+        }
+    }
+    double rad = atof(radius);
+    double area = M_PI * rad * rad;
+    init_array(radius);
+    return area;
+}
+void init_array(char* mass)
+{
+    for (int i = 0; i < 10; i++) {
+        mass[i] = 0;
+    }
+}
+
+int intersects(circle* figures, int index, int length)
+{
+    printf("Position %d:\ncircle(%.1lf %.1lf, %.1lf)\n  perimeter = %lf\n  "
+           "area = "
+           "%lf\n  intersects:\n",
+           index + 1,
+           figures[index].center.x,
+           figures[index].center.y,
+           figures[index].radius,
+           figures[index].perimeter,
+           figures[index].area);
+    if (length <= 1)
+        printf("Недостаточно объектов, чтобы посчиатать пересечения\n");
+    double x1 = figures[index].center.x;
+    double y1 = figures[index].center.y;
+    double r1 = figures[index].radius;
+    for (int i = 0; i < length; i++) {
+        if (i == index)
+            continue;
+        else {
+            double x2 = figures[i].center.x;
+            double y2 = figures[i].center.y;
+            double r2 = figures[i].radius;
+            double d = sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+            if (d < r1 + r2)
+                printf("  %d. circle\n", i + 1);
+        }
+    }
+    return 0;
+}
+
+int get_center(char* str, circle* circle)
+{
+    char* number = malloc(10);
+    int bracket = 0;
+    for (int i = 0;; i++) {
+        if (str[i] == '(') {
+            bracket = i;
+            break;
+        }
+    }
+    int index = 0;
+    for (int i = bracket + 1; str[i] != ','; i++)
+        number[index++] = str[i];
+    if (sscanf(number, "%lf %lf", &(circle->center.x), &(circle->center.y))
+        == 2) {
+        free(number);
+        return 0;
+    } else {
+        free(number);
+        return -1;
+    }
+}
+
+int get_radius(char* str, circle* circle)
+{
+    char* number = malloc(10);
+    int comma = 0;
+    for (int i = 0; str[i] != ','; i++)
+        comma = i + 2;
+    int index = 0;
+    for (int i = comma; str[i] != ')'; i++)
+        number[index++] = str[i];
+    if (sscanf(number, "%lf", &(circle->radius)) == 1) {
+        free(number);
+        return 0;
+    } else {
+        free(number);
+        return -1;
+    }
 }
