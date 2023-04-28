@@ -73,7 +73,7 @@ CTEST(INPUT_CHECK, CHECK_GET_CENTER)
     char str[] = "circle(0 0, 1.5)";
     circle* circle = calloc(1, sizeof(circle));
     int expec = 0;
-    int real = get_center(str,circle);
+    int real = get_center(str, circle);
     ASSERT_EQUAL(expec, real);
 }
 CTEST(INPUT_CHECK, CHECK_GET_RAD)
@@ -81,6 +81,6 @@ CTEST(INPUT_CHECK, CHECK_GET_RAD)
     char str[] = "circle(0 0, 1.5)";
     circle* circle = calloc(1, sizeof(circle));
     int expec = 0;
-    int real = get_radius(str,circle);
+    int real = get_radius(str, circle);
     ASSERT_EQUAL(expec, real);
 }
